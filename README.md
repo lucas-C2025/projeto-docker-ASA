@@ -5,6 +5,7 @@
 ## 👤 Discentes
 
 * Maria Carlyni Pereira de Oliveira ** - Matrícula: 20231380003
+* Lucas dos Santos Carvalho ** - Matrícula: 20222380007
 
 
 
@@ -104,6 +105,7 @@ Você deverá ver a tela de instalação inicial do WordPress.
 * `vagrant ssh`: Conecta-se via SSH ao terminal da VM.
 * `vagrant halt`: Desliga a VM.
 * `vagrant destroy -f`: Deleta permanentemente a VM.
+* http://192.168.56.137:8080/
 
 ---
 
