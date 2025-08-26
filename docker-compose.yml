@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  webproxy:
+    image: mariacarlyni/nginx-l4:1.0 
+    container_name: webproxy
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - webserver
+    networks:
+      - wordpress
+
+  webserver:
+    image: wordpress:latest
+    container_name: webserver
+    restart: always
+    volumes:
+      - app:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_USER: wordpressuser
+      WORDPRESS_DB_PASSWORD: senhasecreta_user
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - database
+    networks:
+      - wordpress
+
+  database:
+    image: mysql:5.7
+    container_name: database
+    restart: always
+    volumes:
+      - my:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: senhasecreta_root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpressuser
+      MYSQL_PASSWORD: senhasecreta_user
+    networks:
+      - wordpress
+
+networks:
+  wordpress:
+    driver: bridge
+
+volumes:
+  app:
+  my:

@@ -1,0 +1,52 @@
+---
+- name: Provisionar VM com Docker e subir stack WordPress
+  hosts: all
+  become: yes
+  tasks:
+    - name: Atualizar pacotes do sistema
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Instalar pacotes de pré-requisito
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Adicionar chave GPG oficial do Docker (compatível com Debian/Ubuntu)
+      apt_key:
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+        state: present
+
+    - name: Adicionar repositório oficial do Docker (compatível com Debian/Ubuntu)
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Instalar Docker Engine e Docker Compose V2
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Copiar arquivo docker-compose.yml para a VM
+      copy:
+        src: docker-compose.yml
+        dest: /home/vagrant/docker-compose.yml
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+
+
+    - name: Subir stack do WordPress usando o comando shell
+      shell: docker compose -f /home/vagrant/docker-compose.yml up -d
+      args:
+        chdir: /home/vagrant
